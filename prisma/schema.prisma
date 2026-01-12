@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("POSTGRES_URL")
+}
+
+model Memo {
+  id        String    @id @default(cuid())
+  title     String    @db.VarChar(255)
+  content   String    @default("") @db.Text
+  isPinned  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  tags      MemoTag[]
+
+  @@index([createdAt(sort: Desc)])
+  @@index([updatedAt(sort: Desc)])
+  @@index([isPinned])
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique @db.VarChar(50)
+  color     String?   @default("#6B7280") @db.VarChar(7)
+  createdAt DateTime  @default(now())
+  memos     MemoTag[]
+
+  @@index([name])
+}
+
+model MemoTag {
+  memoId     String
+  tagId      String
+  assignedAt DateTime @default(now())
+  memo       Memo     @relation(fields: [memoId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([memoId, tagId])
+  @@index([memoId])
+  @@index([tagId])
+}
