@@ -26,12 +26,12 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Link href="/memo/new">
-            <Button size="sm">
+          <Button size="sm" asChild>
+            <Link href="/memo/new">
               <PenSquare className="h-4 w-4" />
               <span className="hidden sm:inline">新規作成</span>
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
 

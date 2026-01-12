@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { FileText, Tag, Plus } from 'lucide-react';
+import { FileText, Tag } from 'lucide-react';
 import { getTags } from '@/server/data/tag';
-import { Badge, SidebarSkeleton } from '@/components/ui';
+import { SidebarSkeleton } from '@/components/ui';
 import { TagCreateButton } from '@/components/features/tag/TagCreateButton';
+import { TagListItem } from '@/components/features/tag/TagListItem';
 
 interface SidebarProps {
   activeTagId?: string;
@@ -62,29 +63,7 @@ async function TagList({ activeTagId }: { activeTagId?: string }) {
   return (
     <ul className="flex-1 space-y-1 overflow-y-auto">
       {tags.map((tag) => (
-        <li key={tag.id}>
-          <Link
-            href={`/?tag=${tag.id}`}
-            className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
-              activeTagId === tag.id
-                ? 'bg-blue-50 text-blue-700'
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <span className="flex items-center gap-2">
-              <span
-                className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: tag.color || '#6B7280' }}
-              />
-              {tag.name}
-            </span>
-            {tag._count && (
-              <Badge size="sm" variant="default">
-                {tag._count.memos}
-              </Badge>
-            )}
-          </Link>
-        </li>
+        <TagListItem key={tag.id} tag={tag} isActive={activeTagId === tag.id} />
       ))}
     </ul>
   );

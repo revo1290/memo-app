@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: #f9fafb;
@@ -8,30 +9,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-}
-
-/* Prose (Markdown) styles */
-.prose {
-  max-width: none;
-}
-
-.prose pre {
-  background-color: #f3f4f6;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  overflow-x: auto;
-}
-
-.prose code {
-  background-color: #f3f4f6;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.875em;
-}
-
-.prose pre code {
-  background-color: transparent;
-  padding: 0;
 }
 
 /* Custom scrollbar */

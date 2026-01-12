@@ -20,9 +20,9 @@ export function MemoList({
         title={emptyMessage}
         description="新しいメモを作成してみましょう"
         action={
-          <Link href="/memo/new">
-            <Button>メモを作成</Button>
-          </Link>
+          <Button asChild>
+            <Link href="/memo/new">メモを作成</Link>
+          </Button>
         }
       />
     );

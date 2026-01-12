@@ -56,12 +56,12 @@ export default async function MemoDetailPage({ params }: MemoDetailPageProps) {
             </Link>
 
             <div className="flex items-center gap-2">
-              <Link href={`/memo/${memo.id}/edit`}>
-                <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/memo/${memo.id}/edit`}>
                   <Pencil className="h-4 w-4" />
                   編集
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               <DeleteMemoButton memoId={memo.id} memoTitle={memo.title} />
             </div>
           </div>

@@ -10,9 +10,9 @@ export default function NotFound() {
         title="ページが見つかりません"
         description="お探しのページは存在しないか、移動した可能性があります。"
         action={
-          <Link href="/">
-            <Button>ホームに戻る</Button>
-          </Link>
+          <Button asChild>
+            <Link href="/">ホームに戻る</Link>
+          </Button>
         }
       />
     </div>

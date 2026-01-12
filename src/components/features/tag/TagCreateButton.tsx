@@ -5,10 +5,22 @@ import { Plus, Check, X } from 'lucide-react';
 import { IconButton, Input, Button } from '@/components/ui';
 import { createTag } from '@/server/actions/tag';
 
+const PRESET_COLORS = [
+  '#EF4444', // red
+  '#F97316', // orange
+  '#EAB308', // yellow
+  '#22C55E', // green
+  '#06B6D4', // cyan
+  '#3B82F6', // blue
+  '#8B5CF6', // violet
+  '#EC4899', // pink
+  '#6B7280', // gray
+];
+
 export function TagCreateButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
-  const [color, setColor] = useState('#6B7280');
+  const [color, setColor] = useState('#3B82F6');
   const [error, setError] = useState('');
   const [isPending, startTransition] = useTransition();
 
@@ -72,14 +84,22 @@ export function TagCreateButton() {
           }}
         />
 
-        <div className="flex items-center gap-2">
+        <div className="space-y-2">
           <label className="text-sm text-gray-600">色:</label>
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            className="h-8 w-8 cursor-pointer rounded border border-gray-200"
-          />
+          <div className="flex flex-wrap gap-1.5">
+            {PRESET_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setColor(c)}
+                className={`h-6 w-6 rounded-full border-2 transition-transform hover:scale-110 ${
+                  color === c ? 'border-gray-800 ring-2 ring-gray-300' : 'border-transparent'
+                }`}
+                style={{ backgroundColor: c }}
+                aria-label={`色: ${c}`}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="flex justify-end gap-2">
