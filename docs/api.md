@@ -174,17 +174,80 @@ PUT /api/memos/:id
 
 ---
 
-### 3.5 メモ削除
+### 3.5 メモ削除（論理削除）
 
 ```
 DELETE /api/memos/:id
 ```
 
+メモを論理削除（ゴミ箱へ移動）します。
+
 **レスポンス**: 204 No Content
 
 ---
 
-### 3.6 ピン留めトグル
+### 3.6 ゴミ箱のメモ一覧取得
+
+```
+GET /api/memos/trash
+```
+
+**レスポンス例**:
+```json
+{
+  "data": {
+    "memos": [
+      {
+        "id": "clx1234567890",
+        "title": "削除されたメモ",
+        "content": "...",
+        "deletedAt": "2026-01-13T10:00:00.000Z",
+        ...
+      }
+    ]
+  }
+}
+```
+
+---
+
+### 3.7 メモ復元
+
+```
+POST /api/memos/:id/restore
+```
+
+ゴミ箱からメモを復元します。
+
+**レスポンス**: 200 OK + 復元されたメモ
+
+---
+
+### 3.8 メモ完全削除
+
+```
+DELETE /api/memos/:id/permanent
+```
+
+メモをデータベースから完全に削除します（復元不可）。
+
+**レスポンス**: 204 No Content
+
+---
+
+### 3.9 ゴミ箱を空にする
+
+```
+DELETE /api/memos/trash
+```
+
+ゴミ箱内のすべてのメモを完全に削除します。
+
+**レスポンス**: 204 No Content
+
+---
+
+### 3.10 ピン留めトグル
 
 ```
 PATCH /api/memos/:id/pin
@@ -277,23 +340,33 @@ DELETE /api/tags/:id
 
 ---
 
-## 5. Server Actions（代替実装）
+## 5. Server Actions（実装済み）
 
-API Routesの代わりに、以下のServer Actionsでも実装可能:
+このアプリではAPI Routesの代わりにServer Actionsを使用:
 
 ```typescript
-// src/app/actions/memo.ts
+// src/server/actions/memo.ts
 'use server'
 
+// メモCRUD
 export async function createMemo(formData: FormData) { ... }
 export async function updateMemo(id: string, formData: FormData) { ... }
-export async function deleteMemo(id: string) { ... }
+export async function deleteMemo(id: string) { ... }  // 論理削除
 export async function togglePin(id: string) { ... }
 
-// src/app/actions/tag.ts
+// ゴミ箱機能
+export async function restoreMemo(id: string) { ... }
+export async function permanentlyDeleteMemo(id: string) { ... }
+export async function emptyTrash() { ... }
+
+// 無限スクロール用
+export async function fetchMoreMemos(params: MemoSearchParams) { ... }
+
+// src/server/actions/tag.ts
 'use server'
 
 export async function createTag(formData: FormData) { ... }
+export async function updateTag(id: string, formData: FormData) { ... }
 export async function deleteTag(id: string) { ... }
 ```
 
@@ -326,3 +399,4 @@ export const createTagSchema = z.object({
 | 日付 | 内容 |
 |------|------|
 | 2026-01-12 | 初版作成 |
+| 2026-01-13 | ゴミ箱関連API追加、Server Actionsの更新、タグ更新アクション追加 |

@@ -1,15 +1,17 @@
 import { Suspense } from 'react';
+import { FileText } from 'lucide-react';
 
 // 動的レンダリングを強制（DB接続が必要）
 export const dynamic = 'force-dynamic';
 
 import { Header, Sidebar } from '@/components/layout';
 import { MobileSidebar } from '@/components/layout/MobileSidebar';
-import { MemoList } from '@/components/features/memo';
-import { SortSelect, MemoListSkeleton } from '@/components/ui';
-import { getMemos } from '@/server/data/memo';
+import { InfiniteScrollList } from '@/components/features/memo';
+import { SortSelect, MemoListSkeleton, EmptyState, Button } from '@/components/ui';
+import { getMemosWithPagination } from '@/server/data/memo';
 import { getTags } from '@/server/data/tag';
 import type { SortOption, SortOrder } from '@/types';
+import Link from 'next/link';
 
 interface HomePageProps {
   searchParams: Promise<{
@@ -66,7 +68,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   );
 }
 
-// Server Component for Memo List
+// Server Component for Memo List with Infinite Scroll
 async function MemoListContainer({
   search,
   tagId,
@@ -78,13 +80,35 @@ async function MemoListContainer({
   sort?: SortOption;
   order?: SortOrder;
 }) {
-  const memos = await getMemos({ search, tagId, sort, order });
+  const searchParams = { search, tagId, sort, order };
+  const { memos, pagination } = await getMemosWithPagination(searchParams);
 
-  const emptyMessage = search
-    ? `「${search}」に一致するメモが見つかりませんでした`
-    : tagId
-      ? 'このタグのメモがありません'
-      : 'メモがありません';
+  if (memos.length === 0) {
+    const emptyMessage = search
+      ? `「${search}」に一致するメモが見つかりませんでした`
+      : tagId
+        ? 'このタグのメモがありません'
+        : 'メモがありません';
 
-  return <MemoList memos={memos} emptyMessage={emptyMessage} />;
+    return (
+      <EmptyState
+        icon={<FileText className="h-12 w-12" />}
+        title={emptyMessage}
+        description="新しいメモを作成してみましょう"
+        action={
+          <Button asChild>
+            <Link href="/memo/new">メモを作成</Link>
+          </Button>
+        }
+      />
+    );
+  }
+
+  return (
+    <InfiniteScrollList
+      initialMemos={memos}
+      initialPagination={pagination}
+      searchParams={searchParams}
+    />
+  );
 }

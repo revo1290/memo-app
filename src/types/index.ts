@@ -35,3 +35,18 @@ export type ActionResult<T = void> = {
   error?: string;
   errors?: Record<string, string[]>;
 };
+
+// ページネーション情報
+export type PaginationInfo = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+};
+
+// ページネーション付きメモ一覧
+export type PaginatedMemos = {
+  memos: MemoWithTags[];
+  pagination: PaginationInfo;
+};

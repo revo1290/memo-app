@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Input,
@@ -14,6 +14,7 @@ import {
 import { TagSelector } from '@/components/features/tag/TagSelector';
 import { PinButton } from './PinButton';
 import { MemoPreview } from './MemoPreview';
+import { CharacterCounter } from './CharacterCounter';
 import { createMemo, updateMemo } from '@/server/actions/memo';
 import type { MemoWithTags, TagWithCount, ActionResult } from '@/types';
 
@@ -26,6 +27,7 @@ interface MemoFormProps {
 export function MemoForm({ memo, tags, mode }: MemoFormProps) {
   const router = useRouter();
   const [content, setContent] = useState(memo?.content || '');
+  const [title, setTitle] = useState(memo?.title || '');
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(
     memo?.tags.map((t) => t.tagId) || []
   );
@@ -59,7 +61,8 @@ export function MemoForm({ memo, tags, mode }: MemoFormProps) {
         name="title"
         label="タイトル"
         placeholder="メモのタイトル"
-        defaultValue={memo?.title}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         error={state?.errors?.title?.[0]}
         required
       />
@@ -103,6 +106,7 @@ export function MemoForm({ memo, tags, mode }: MemoFormProps) {
               className="min-h-[300px] font-mono"
               error={state?.errors?.content?.[0]}
             />
+            <CharacterCounter text={content} className="mt-2" />
           </TabsContent>
 
           <TabsContent value="preview">

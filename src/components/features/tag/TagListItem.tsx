@@ -2,9 +2,10 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { Badge, IconButton, ConfirmDialog } from '@/components/ui';
 import { deleteTag } from '@/server/actions/tag';
+import { TagEditDialog } from './TagEditDialog';
 import type { TagWithCount } from '@/types';
 
 interface TagListItemProps {
@@ -14,6 +15,7 @@ interface TagListItemProps {
 
 export function TagListItem({ tag, isActive }: TagListItemProps) {
   const [showDelete, setShowDelete] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
@@ -49,8 +51,21 @@ export function TagListItem({ tag, isActive }: TagListItemProps) {
         </span>
       </Link>
 
-      {/* Delete button on hover */}
-      <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100">
+      {/* Action buttons on hover */}
+      <div className="absolute right-8 top-1/2 flex -translate-y-1/2 gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+        <IconButton
+          variant="ghost"
+          size="sm"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowEdit(true);
+          }}
+          label="タグを編集"
+          className="text-gray-400 hover:text-blue-500"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+        </IconButton>
         <IconButton
           variant="ghost"
           size="sm"
@@ -65,6 +80,12 @@ export function TagListItem({ tag, isActive }: TagListItemProps) {
           <Trash2 className="h-3.5 w-3.5" />
         </IconButton>
       </div>
+
+      <TagEditDialog
+        tag={tag}
+        isOpen={showEdit}
+        onClose={() => setShowEdit(false)}
+      />
 
       <ConfirmDialog
         isOpen={showDelete}

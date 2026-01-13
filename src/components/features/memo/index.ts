@@ -5,3 +5,5 @@ export { MemoForm } from './MemoForm';
 export { MemoPreview } from './MemoPreview';
 export { PinButton } from './PinButton';
 export { DeleteMemoButton } from './DeleteMemoButton';
+export { CharacterCounter } from './CharacterCounter';
+export { InfiniteScrollList } from './InfiniteScrollList';

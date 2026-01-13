@@ -16,6 +16,7 @@ model Memo {
   title     String    @db.VarChar(255)
   content   String    @default("") @db.Text
   isPinned  Boolean   @default(false)
+  deletedAt DateTime? // 論理削除用（nullなら未削除）
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   tags      MemoTag[]
@@ -23,6 +24,7 @@ model Memo {
   @@index([createdAt(sort: Desc)])
   @@index([updatedAt(sort: Desc)])
   @@index([isPinned])
+  @@index([deletedAt])
 }
 
 model Tag {

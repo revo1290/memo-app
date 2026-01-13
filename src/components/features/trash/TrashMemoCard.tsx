@@ -1,20 +1,16 @@
-import Link from 'next/link';
 import { Card, Badge } from '@/components/ui';
-import { MemoCardActions } from './MemoCardActions';
+import { TrashMemoActions } from './TrashMemoActions';
 import { formatDate, truncate } from '@/lib/utils';
 import type { MemoWithTags } from '@/types';
 
-interface MemoCardProps {
+interface TrashMemoCardProps {
   memo: MemoWithTags;
 }
 
-export function MemoCard({ memo }: MemoCardProps) {
+export function TrashMemoCard({ memo }: TrashMemoCardProps) {
   return (
-    <Card
-      className="group relative transition-shadow hover:shadow-md"
-      padding="none"
-    >
-      <Link href={`/memo/${memo.id}`} className="block p-4">
+    <Card className="group relative" padding="none">
+      <div className="p-4">
         {/* Header */}
         <div className="mb-2 flex items-start justify-between gap-2">
           <h3 className="flex items-center gap-2 text-base font-semibold text-gray-900">
@@ -52,12 +48,12 @@ export function MemoCard({ memo }: MemoCardProps) {
 
         {/* Footer */}
         <p className="text-xs text-gray-400">
-          {formatDate(memo.updatedAt)}
+          削除日: {memo.deletedAt ? formatDate(memo.deletedAt) : '不明'}
         </p>
-      </Link>
+      </div>
 
       {/* Action Buttons (Client Component) */}
-      <MemoCardActions memoId={memo.id} memoTitle={memo.title} isPinned={memo.isPinned} />
+      <TrashMemoActions memoId={memo.id} memoTitle={memo.title} />
     </Card>
   );
 }

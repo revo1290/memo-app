@@ -16,7 +16,8 @@
 │ title               │       │ name                │
 │ content             │       │ color               │
 │ isPinned            │       │ createdAt           │
-│ createdAt           │       └──────────┬──────────┘
+│ deletedAt           │       └──────────┬──────────┘
+│ createdAt           │                  │
 │ updatedAt           │                  │
 └──────────┬──────────┘                  │
            │                             │
@@ -39,6 +40,7 @@
 | title | String(255) | NO | - | タイトル |
 | content | Text | NO | "" | 本文（Markdown） |
 | isPinned | Boolean | NO | false | ピン留め状態 |
+| deletedAt | DateTime | YES | null | 削除日時（論理削除用、nullなら未削除） |
 | createdAt | DateTime | NO | now() | 作成日時 |
 | updatedAt | DateTime | NO | @updatedAt | 更新日時 |
 
@@ -46,6 +48,7 @@
 - `idx_memo_created_at` (createdAt DESC)
 - `idx_memo_updated_at` (updatedAt DESC)
 - `idx_memo_is_pinned` (isPinned)
+- `idx_memo_deleted_at` (deletedAt)
 
 ### 3.2 Tag（タグ）
 
@@ -90,6 +93,7 @@ model Memo {
   title     String    @db.VarChar(255)
   content   String    @default("") @db.Text
   isPinned  Boolean   @default(false)
+  deletedAt DateTime? // 論理削除用（nullなら未削除）
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   tags      MemoTag[]
@@ -97,6 +101,7 @@ model Memo {
   @@index([createdAt(sort: Desc)])
   @@index([updatedAt(sort: Desc)])
   @@index([isPinned])
+  @@index([deletedAt])
 }
 
 model Tag {
@@ -150,7 +155,32 @@ ORDER BY "updatedAt" DESC;
 SELECT m.* FROM "Memo" m
 INNER JOIN "MemoTag" mt ON m.id = mt."memoId"
 WHERE mt."tagId" = 'tag_id'
+  AND m."deletedAt" IS NULL
 ORDER BY m."updatedAt" DESC;
+```
+
+### 5.4 ゴミ箱のメモ一覧取得
+
+```sql
+SELECT * FROM "Memo"
+WHERE "deletedAt" IS NOT NULL
+ORDER BY "deletedAt" DESC;
+```
+
+### 5.5 メモの論理削除
+
+```sql
+UPDATE "Memo"
+SET "deletedAt" = NOW()
+WHERE id = 'memo_id';
+```
+
+### 5.6 メモの復元
+
+```sql
+UPDATE "Memo"
+SET "deletedAt" = NULL
+WHERE id = 'memo_id';
 ```
 
 ## 6. マイグレーション戦略
@@ -175,3 +205,4 @@ ORDER BY m."updatedAt" DESC;
 | 日付 | 内容 |
 |------|------|
 | 2026-01-12 | 初版作成 |
+| 2026-01-13 | 論理削除（deletedAt）カラム追加、ゴミ箱関連のクエリパターン追加 |

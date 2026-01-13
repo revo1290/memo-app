@@ -41,8 +41,8 @@ export function DeleteMemoButton({ memoId, memoTitle }: DeleteMemoButtonProps) {
         onClose={() => setIsOpen(false)}
         onConfirm={handleDelete}
         title="メモを削除しますか？"
-        description={`「${memoTitle}」を削除します。この操作は取り消せません。`}
-        confirmText="削除"
+        description={`「${memoTitle}」をゴミ箱に移動します。ゴミ箱から復元できます。`}
+        confirmText="ゴミ箱に移動"
         variant="danger"
         isLoading={isPending}
       />
