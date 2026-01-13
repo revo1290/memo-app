@@ -94,7 +94,7 @@ export function TagEditDialog({ tag, isOpen, onClose }: TagEditDialogProps) {
   return (
     <dialog
       ref={dialogRef}
-      className="rounded-lg bg-white p-0 shadow-xl backdrop:bg-black/50 w-full max-w-sm"
+      className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-0 shadow-xl backdrop:bg-black/50 w-full max-w-sm m-0"
       onClick={handleBackdropClick}
     >
       <div className="p-6">
