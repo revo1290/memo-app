@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState, useMemo } from 'react';
+import { useActionState, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Input,
@@ -15,6 +15,7 @@ import { TagSelector } from '@/components/features/tag/TagSelector';
 import { PinButton } from './PinButton';
 import { MemoPreview } from './MemoPreview';
 import { CharacterCounter } from './CharacterCounter';
+import { MarkdownToolbar } from './MarkdownToolbar';
 import { createMemo, updateMemo } from '@/server/actions/memo';
 import type { MemoWithTags, TagWithCount, ActionResult } from '@/types';
 
@@ -26,11 +27,77 @@ interface MemoFormProps {
 
 export function MemoForm({ memo, tags, mode }: MemoFormProps) {
   const router = useRouter();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [content, setContent] = useState(memo?.content || '');
   const [title, setTitle] = useState(memo?.title || '');
+  const [isUploading, setIsUploading] = useState(false);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(
     memo?.tags.map((t) => t.tagId) || []
   );
+
+  // Handle image paste
+  const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          await uploadImage(file);
+        }
+        break;
+      }
+    }
+  }, []);
+
+  // Upload image to Vercel Blob
+  const uploadImage = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const response = await fetch(
+        `/api/upload?filename=${encodeURIComponent(file.name)}`,
+        {
+          method: 'POST',
+          body: file,
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'アップロードに失敗しました');
+      }
+
+      const blob = await response.json();
+      insertImageMarkdown(blob.url, file.name);
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert(error instanceof Error ? error.message : '画像のアップロードに失敗しました');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Insert image markdown at cursor position
+  const insertImageMarkdown = (url: string, alt: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const text = textarea.value;
+    const imageMarkdown = `![${alt}](${url})`;
+    const newText =
+      text.substring(0, start) + imageMarkdown + text.substring(start);
+
+    setContent(newText);
+
+    setTimeout(() => {
+      textarea.focus();
+      const newPosition = start + imageMarkdown.length;
+      textarea.setSelectionRange(newPosition, newPosition);
+    }, 0);
+  };
 
   // Server Action wrapper
   const formAction = async (
@@ -98,14 +165,30 @@ export function MemoForm({ memo, tags, mode }: MemoFormProps) {
           </div>
 
           <TabsContent value="edit">
-            <Textarea
-              name="content"
-              placeholder="マークダウン記法が使えます..."
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-[300px] font-mono"
-              error={state?.errors?.content?.[0]}
+            <MarkdownToolbar
+              textareaRef={textareaRef}
+              onContentChange={setContent}
             />
+            <div className="relative">
+              <Textarea
+                ref={textareaRef}
+                name="content"
+                placeholder="マークダウン記法が使えます... (画像はペーストでも追加できます)"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                onPaste={handlePaste}
+                className="min-h-[300px] rounded-t-none font-mono"
+                error={state?.errors?.content?.[0]}
+              />
+              {isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center rounded-b-lg bg-white/80">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+                    画像をアップロード中...
+                  </div>
+                </div>
+              )}
+            </div>
             <CharacterCounter text={content} className="mt-2" />
           </TabsContent>
 

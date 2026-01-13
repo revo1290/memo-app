@@ -7,3 +7,4 @@ export { PinButton } from './PinButton';
 export { DeleteMemoButton } from './DeleteMemoButton';
 export { CharacterCounter } from './CharacterCounter';
 export { InfiniteScrollList } from './InfiniteScrollList';
+export { MarkdownToolbar } from './MarkdownToolbar';
