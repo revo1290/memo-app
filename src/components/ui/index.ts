@@ -20,3 +20,6 @@ export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog';
 
 // Navigation
 export { Tabs, TabsList, TabsTrigger, TabsContent, type TabsProps } from './Tabs';
+
+// Theme
+export { ThemeToggle } from './ThemeToggle';

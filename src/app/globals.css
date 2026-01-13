@@ -4,11 +4,27 @@
 :root {
   --background: #f9fafb;
   --foreground: #111827;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --sidebar-bg: #f9fafb;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+}
+
+.dark {
+  --background: #111827;
+  --foreground: #f9fafb;
+  --card-bg: #1f2937;
+  --card-border: #374151;
+  --sidebar-bg: #1f2937;
+  --input-bg: #374151;
+  --input-border: #4b5563;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  transition: background-color 0.2s, color 0.2s;
 }
 
 /* Custom scrollbar */

@@ -14,15 +14,15 @@ interface SidebarProps {
 
 export function Sidebar({ activeTagId, isTrashPage }: SidebarProps) {
   return (
-    <aside className="hidden w-64 flex-shrink-0 border-r border-gray-200 bg-gray-50 lg:block">
+    <aside className="hidden w-64 flex-shrink-0 border-r border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900 lg:block">
       <nav className="flex h-full flex-col p-4">
         {/* All Memos */}
         <Link
           href="/"
           className={`mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
             !activeTagId && !isTrashPage
-              ? 'bg-blue-50 text-blue-700'
-              : 'text-gray-700 hover:bg-gray-100'
+              ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+              : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
           }`}
         >
           <FileText className="h-4 w-4" />
@@ -35,11 +35,11 @@ export function Sidebar({ activeTagId, isTrashPage }: SidebarProps) {
         </Suspense>
 
         {/* Divider */}
-        <div className="my-4 border-t border-gray-200" />
+        <div className="my-4 border-t border-gray-200 dark:border-gray-700" />
 
         {/* Tags Section */}
         <div className="flex items-center justify-between px-3 py-2">
-          <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
             <Tag className="h-3 w-3" />
             タグ
           </span>
@@ -61,7 +61,7 @@ async function TagList({ activeTagId }: { activeTagId?: string }) {
 
   if (tags.length === 0) {
     return (
-      <p className="px-3 py-2 text-sm text-gray-500">
+      <p className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
         タグがありません
       </p>
     );
@@ -85,8 +85,8 @@ async function TrashLink({ isActive }: { isActive?: boolean }) {
       href="/trash"
       className={`mb-2 flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
         isActive
-          ? 'bg-blue-50 text-blue-700'
-          : 'text-gray-700 hover:bg-gray-100'
+          ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+          : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
       }`}
     >
       <span className="flex items-center gap-2">
@@ -94,7 +94,7 @@ async function TrashLink({ isActive }: { isActive?: boolean }) {
         ゴミ箱
       </span>
       {count > 0 && (
-        <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600">
+        <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-300">
           {count}
         </span>
       )}

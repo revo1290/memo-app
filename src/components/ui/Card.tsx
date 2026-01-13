@@ -7,9 +7,9 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles = {
-  default: 'bg-white border border-gray-200',
-  outlined: 'bg-transparent border border-gray-300',
-  elevated: 'bg-white shadow-md border-0',
+  default: 'bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700',
+  outlined: 'bg-transparent border border-gray-300 dark:border-gray-600',
+  elevated: 'bg-white shadow-md border-0 dark:bg-gray-800 dark:shadow-gray-900/50',
 } as const;
 
 const paddingStyles = {
@@ -70,7 +70,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
     return (
       <Component
         ref={ref}
-        className={cn('text-lg font-semibold text-gray-900', className)}
+        className={cn('text-lg font-semibold text-gray-900 dark:text-white', className)}
         {...props}
       />
     );
@@ -85,7 +85,7 @@ export interface CardContentProps extends HTMLAttributes<HTMLDivElement> {}
 export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, ...props }, ref) => {
     return (
-      <div ref={ref} className={cn('text-gray-600', className)} {...props} />
+      <div ref={ref} className={cn('text-gray-600 dark:text-gray-300', className)} {...props} />
     );
   }
 );
@@ -101,7 +101,7 @@ export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
       <div
         ref={ref}
         className={cn(
-          'mt-4 flex items-center gap-2 border-t border-gray-100 pt-4',
+          'mt-4 flex items-center gap-2 border-t border-gray-100 pt-4 dark:border-gray-700',
           className
         )}
         {...props}
