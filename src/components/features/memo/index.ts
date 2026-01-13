@@ -1,4 +1,5 @@
 export { MemoCard } from './MemoCard';
+export { MemoCardActions } from './MemoCardActions';
 export { MemoList } from './MemoList';
 export { MemoForm } from './MemoForm';
 export { MemoPreview } from './MemoPreview';

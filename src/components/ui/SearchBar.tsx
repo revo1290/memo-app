@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, type FormEvent } from 'react';
+import { useState, useCallback, useEffect, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -41,11 +41,11 @@ export function SearchBar({
   );
 
   // デバウンス後に検索実行
-  useState(() => {
+  useEffect(() => {
     if (debouncedQuery !== searchParams.get('search')) {
       updateSearch(debouncedQuery);
     }
-  });
+  }, [debouncedQuery, searchParams, updateSearch]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
